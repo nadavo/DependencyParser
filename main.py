@@ -1,9 +1,8 @@
 from DependencyDataReader import DependencyDataReader
 from DependencyParser import DependencyParser
 from FeaturesFactory import BasicFeatures, AdvancedFeatures
-from utils import Timer, sendEmail
-from global_consts import train_file, dev_file, test_file, dev_test_file, dev_train_file, all_file, comp_file, devcomp_file
-from competition import generateCompTagging
+from utils import Timer
+from global_consts import train_file, dev_file, test_file, dev_test_file, dev_train_file, all_file
 from sys import argv
 
 
@@ -22,7 +21,7 @@ def main():
     pretrained_weights = None
 
     time = Timer('Data reader')
-    train_data = DependencyDataReader(all_file)
+    train_data = DependencyDataReader(train_file)
     time.stop()
     print("Number of sentences:", train_data.get_num_sentences())
     time = Timer('Advanced Features')
@@ -36,12 +35,10 @@ def main():
     results = ["Number of Iterations: " + str(NUM_ITERATIONS), "Feature Cutoff: " + str(FEATURES_CUTOFF)]
     model.predict(train_data)
     results.append(str(model.evaluate(train_data)))
-    test_data = DependencyDataReader(dev_test_file)
+    test_data = DependencyDataReader(test_file)
     print("Number of sentences:", test_data.get_num_sentences())
     model.predict(test_data)
     results.append(str(model.evaluate(test_data)))
-    sendEmail(results)
-    # generateCompTagging(devcomp_file, model)
     global_timer.stop()
 
 
